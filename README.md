@@ -84,7 +84,7 @@ import { fetcha } from "@co-labo-hub/fetcha";
 
 | methods                                          | type      | description |
 | ------------------------------------------------ | --------- | ----------- |
-| `url(url: string \| URL \| Request)`             | setting   |             |
+| `url(url: string \| URL)`                        | setting   |             |
 | `origin(origin?: string \| URL)`                 | setting   |             |
 | `header(name: string, value?: string)`           | setting   |             |
 | `contentType(mime: "application/json" \| "")`    | setting   |             |

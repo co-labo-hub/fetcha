@@ -2,7 +2,7 @@ import { FetchaError } from "./FetchaError";
 import { fetcha } from "./fetcha";
 
 (async () => {
-  fetcha("/get?value=get")
+    fetcha("/get?value=get")
     .origin("https://httpbin.org")
     .get()
     .then((resp) => resp.toJson<{ args: { value: string } }>())
@@ -95,4 +95,25 @@ import { fetcha } from "./fetcha";
     .then((resp) => resp.toJson())
     .then((data) => console.error(data))
     .catch((e: FetchaError) => console.log("500", e.status === 500));
+
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  fetcha()
+    .origin("https://httpbin.org")
+    .url("/get?value=get")
+    .get()
+    .then((resp) => resp.toJson<{ args: { value: string } }>())
+    .then(({ args }) => console.log("get(origin before url)", args.value === "get"))
+    .catch((e) => console.error("get", e));
+
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  fetcha("/post")
+    .origin("https://httpbin.org")
+    .body({ value: "post" })
+    .contentType("application/json")
+    .post()
+    .then((resp) => resp.toJson<{ json: { value: string } }>())
+    .then(({ json }) => console.log("post(body before cType)", json.value === "post"))
+    .catch((e) => console.error("post", e));
 })();

@@ -5,8 +5,9 @@ type Method = "GET" | "POST" | "PATCH" | "PUT" | "HEAD" | "DELETE";
 
 class Fetcha {
   private _url;
+  private _origin: string | URL | undefined;
   private headers = new Headers();
-  private _body: BodyInit | undefined;
+  private _body: BodyInit | Json | undefined;
   private _mode: RequestMode | undefined;
   private _credentials: RequestCredentials | undefined;
   private _cache: RequestCache | undefined;
@@ -17,17 +18,15 @@ class Fetcha {
   private _keepalive: boolean | undefined;
   private _signal: AbortSignal | undefined;
 
-  constructor(url?: string | URL | Request) {
+  constructor(url?: string | URL) {
     this._url = url;
   }
-  public url(url: string | URL | Request) {
+  public url(url: string | URL) {
     this._url = url;
     return this;
   }
   public origin(origin?: string | URL) {
-    if (!this._url) throw new FetchaError({ message: "no url" });
-    if (this._url instanceof Request) this._url = this._url.url;
-    this._url = new URL(this._url, origin);
+    this._origin = origin;
     return this;
   }
   public header(name: string, value?: string) {
@@ -40,15 +39,7 @@ class Fetcha {
     return this;
   }
   public body(body: BodyInit | Json) {
-    if (
-      this.headers.get("Content-Type")?.startsWith("application/json") &&
-      typeof body === "object"
-    ) {
-      this._body = JSON.stringify(body);
-    } else {
-      //@ts-ignore
-      this._body = body;
-    }
+    this._body = body;
     return this;
   }
   public mode(mode: RequestMode) {
@@ -89,8 +80,17 @@ class Fetcha {
   public fetch(method: Method = "GET") {
     if (!this._url) throw new FetchaError({ message: "no url" });
 
+    if (this._origin) this._url = new URL(this._url, this._origin);
+
     const init: RequestInit = { method };
     if (this._body) {
+      if (
+        this.headers.get("Content-Type")?.startsWith("application/json") &&
+        typeof this._body === "object"
+      ) {
+        this._body = JSON.stringify(this._body);
+      }
+      //@ts-ignore
       init.body = this._body;
       if (init.body instanceof FormData) this.contentType("");
     }
@@ -145,4 +145,4 @@ class Fetcha {
   }
 }
 
-export const fetcha = (url?: string | URL | Request) => new Fetcha(url);
+export const fetcha = (url?: string | URL) => new Fetcha(url);
