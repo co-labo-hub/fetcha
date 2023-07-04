@@ -1,6 +1,6 @@
 # fetcha!
 
-## comparison
+## Comparison
 
 - fetch
 
@@ -34,7 +34,7 @@ fetch("https://example.com/api", {
         alert(resp.statusText);
     }
   })
-  .catch(({ id }: { id: number }) => console.log(id))
+  .then(({ id }: { id: number }) => console.log(id))
   .catch((e) => alert(e.message));
 ```
 
@@ -66,11 +66,21 @@ fetcha("https://example.com/api")
   });
 ```
 
-## examples
+## Install
+
+```sh
+npm install @co-labo-hub/fetcha
+```
+
+```typescript
+import { fetcha } from "@co-labo-hub/fetcha";
+```
+
+## Examples
 
 - /src/example.ts
 
-## fetcha methods
+## Methods
 
 | methods                                          | type      | description |
 | ------------------------------------------------ | --------- | ----------- |
@@ -90,28 +100,27 @@ fetcha("https://example.com/api")
 | `signal(signal: AbortSignal)`                    | setting   |             |
 | `fetch(method: Method = "GET")`                  | execution |             |
 | `get()`                                          | execution |             |
+| `head()`                                         | execution |             |
+| `delete()`                                       | execution |             |
 | `post(body?: BodyInit \| Json)`                  | execution |             |
 | `patch(body?: BodyInit \| Json)`                 | execution |             |
 | `put(body?: BodyInit \| Json)`                   | execution |             |
-| `head()`                                         | execution |             |
-| `delete()`                                       | execution |             |
 
-## fetcha Error
+## Error
 
 constructor:
+`constructor({ message, request, response }: FetchaErrorProps)`
 
-`constructor({ message, request, response }: FetchaErrorProps, options?: ErrorOptions)`
-
-| properties                                                  | description       |
-| ----------------------------------------------------------- | ----------------- |
-| `request: RequestInit & { url?: string \| URL \| Request }` | request and url   |
-| `response?: Response`                                       | original response |
-| `headers?: Headers`                                         | of response       |
-| `ok?: boolean`                                              | of response       |
-| `redirected?: boolean`                                      | of response       |
-| `status?: number`                                           | of response       |
-| `statusText?: string`                                       | of response       |
-| `type?: ResponseType`                                       | of response       |
-| `url?: string`                                              | of response       |
-| `body?: ReadableStream<Uint8Array> \| null`                 | of response       |
-| `bodyUsed?: boolean`                                        | of response       |
+| properties   | description       | type                                             |
+| ------------ | ----------------- | ------------------------------------------------ |
+| `request`    | request and url   | RequestInit & { url?: string \| URL \| Request } |
+| `response`   | original response | Response \| undefined                            |
+| `headers`    | of response       | Headers \| undefined                             |
+| `ok`         | of response       | boolean \| undefined                             |
+| `redirected` | of response       | boolean \| undefined                             |
+| `status`     | of response       | number \| undefined                              |
+| `statusText` | of response       | string \| undefined                              |
+| `type`       | of response       | ResponseType \| undefined                        |
+| `url`        | of response       | string \| undefined                              |
+| `body`       | of response       | ReadableStream<Uint8Array> \| null \| undefined  |
+| `bodyUsed`   | of response       | boolean \| undefined                             |
