@@ -117,6 +117,7 @@ class Fetcha {
       }
       const _resp: Response & { toJson: <T>() => Promise<T> } = {
         ...response,
+        json: () => response.json(),
         toJson: <T>() => response.json() as Promise<T>,
       };
       return _resp;
