@@ -34,7 +34,10 @@ class Fetcha {
     return this;
   }
   public contentType(mime: "application/json" | "") {
-    if (!mime) this.headers.delete("Content-Type");
+    if (!mime) {
+      this.headers.delete("Content-Type");
+      return this;
+    }
     this.headers.set("Content-Type", mime);
     return this;
   }
@@ -84,18 +87,24 @@ class Fetcha {
 
     const init: RequestInit = { method };
     if (this._body) {
-      if (
-        this.headers.get("Content-Type")?.startsWith("application/json") &&
-        typeof this._body === "object"
-      ) {
-        this._body = JSON.stringify(this._body);
-      }
       //@ts-ignore
       init.body = this._body;
-      if (init.body instanceof FormData) this.contentType("");
+      if (init.body instanceof FormData
+        || init.body instanceof Blob
+        || init.body instanceof URLSearchParams
+        /* || scalar value string */) {
+          this.contentType("");
+      } else if (
+        this.headers.get("Content-Type")?.startsWith("application/json") &&
+        typeof init.body === "object"
+      ) {
+        init.body = JSON.stringify(init.body);
+      }
     }
 
-    if (this.headers) init.headers = this.headers;
+    if ([...this.headers.keys()].length) {
+      init.headers = this.headers;
+    }
     if (this._mode) init.mode = this._mode;
     if (this._credentials) init.credentials = this._credentials;
     if (this._cache) init.cache = this._cache;

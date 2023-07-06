@@ -12,7 +12,7 @@ fetch("https://example.com/api", {
     Authorization: `Bearer ${"foo"}`,
   },
   credentials: "include",
-  mode: "no-cors",
+  mode: "cors",
   body: JSON.stringify({ name: "bar" }), // JSON.stringify
 })
   .then((resp) => {
@@ -45,7 +45,7 @@ fetcha("https://example.com/api")
   .contentType("application/json")
   .header("Authrization", `Bearer ${"foo"}`)
   .credentials("include")
-  .mode("no-cors")
+  .mode("cors")
   .post({ name: "bar" })
   .then((resp) => resp.toJson<{ id: number }>())
   .then(({id}) => console.(id))
@@ -73,7 +73,7 @@ npm install @co-labo-hub/fetcha
 ```
 
 ```typescript
-import { fetcha } from "@co-labo-hub/fetcha";
+import { fetcha, FetchaError } from "@co-labo-hub/fetcha";
 ```
 
 ## Examples
@@ -86,8 +86,8 @@ import { fetcha } from "@co-labo-hub/fetcha";
 | ------------------------------------------------ | --------- | ----------- |
 | `url(url: string \| URL)`                        | setting   |             |
 | `origin(origin?: string \| URL)`                 | setting   |             |
-| `header(name: string, value?: string)`           | setting   |             |
-| `contentType(mime: "application/json" \| "")`    | setting   |             |
+| `header(name: string, value?: string)`           | setting   | "": delete  |
+| `contentType(mime: "application/json" \| "")`    | setting   | "": delete  |
 | `body(body: BodyInit \| Json)`                   | setting   |             |
 | `mode(mode: RequestMode)`                        | setting   |             |
 | `credentials(credentials: RequestCredentials)`   | setting   |             |
@@ -106,21 +106,29 @@ import { fetcha } from "@co-labo-hub/fetcha";
 | `patch(body?: BodyInit \| Json)`                 | execution |             |
 | `put(body?: BodyInit \| Json)`                   | execution |             |
 
+## Response
+
+additional properties
+
+| properties  | return     |
+| ----------- | ---------- |
+| toJson<T>() | Promise<T> |
+
 ## Error
 
-constructor:
+FetchaError:
 `constructor({ message, request, response }: FetchaErrorProps)`
 
-| properties   | description       | type                                             |
-| ------------ | ----------------- | ------------------------------------------------ |
-| `request`    | request and url   | RequestInit & { url?: string \| URL \| Request } |
-| `response`   | original response | Response \| undefined                            |
-| `headers`    | of response       | Headers \| undefined                             |
-| `ok`         | of response       | boolean \| undefined                             |
-| `redirected` | of response       | boolean \| undefined                             |
-| `status`     | of response       | number \| undefined                              |
-| `statusText` | of response       | string \| undefined                              |
-| `type`       | of response       | ResponseType \| undefined                        |
-| `url`        | of response       | string \| undefined                              |
-| `body`       | of response       | ReadableStream<Uint8Array> \| null \| undefined  |
-| `bodyUsed`   | of response       | boolean \| undefined                             |
+| properties   | description       | type                                            |
+| ------------ | ----------------- | ----------------------------------------------- |
+| `request`    | request and url   | RequestInit & { url?: string \| URL }           |
+| `response`   | original response | Response \| undefined                           |
+| `headers`    | of response       | Headers \| undefined                            |
+| `ok`         | of response       | boolean \| undefined                            |
+| `redirected` | of response       | boolean \| undefined                            |
+| `status`     | of response       | number \| undefined                             |
+| `statusText` | of response       | string \| undefined                             |
+| `type`       | of response       | ResponseType \| undefined                       |
+| `url`        | of response       | string \| undefined                             |
+| `body`       | of response       | ReadableStream<Uint8Array> \| null \| undefined |
+| `bodyUsed`   | of response       | boolean \| undefined                            |

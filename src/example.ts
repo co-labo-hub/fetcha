@@ -42,6 +42,7 @@ import { fetcha } from "./fetcha";
   form.set("name", "foo");
   fetcha("/post")
     .origin("https://httpbin.org")
+    .contentType('application/json')  // wrong: expect reset
     .post(form)
     .then((resp) => resp.toJson<{ form: { name: string } }>())
     .then(({ form }) => console.log("post(form)", form.name === "foo"))
